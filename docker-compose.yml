@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+    app:
+        image: openjdk:8-jdk-oraclelinux7
+        working_dir: /opt
+        volumes:
+            - ./:/opt
+        entrypoint: /bin/bash
+        stdin_open: true #to keep container running
+        depends_on:
+            - cassandradb
+    cassandradb:
+        image: cassandra
+
+#pripojeni do kontejneru
+#docker exec -ti <container name> /bin/bash
+

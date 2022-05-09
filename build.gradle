@@ -1,0 +1,75 @@
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+    // Apply the application plugin to add support for building an application
+    id 'application'
+    // Apply the Maven publish plugin to publish resulting artefacts into a Maven repository
+    id 'maven-publish'
+}
+
+group = externalGroup
+version = externalVersion
+
+// Define the main class for the application
+mainClassName = externalMainClassName
+
+run {
+    // Define default system properties applied to the run task and in the generated start scripts of the distribution
+    //systemProperty "login", "mylogin"
+    //systemProperty "password", "mypassword"
+    // Pass all system properties to the application and the start scripts (overwrite previously defined defaults if any)
+    systemProperties System.getProperties()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = 'build-repository'
+            url = "file://${buildDir}/mvn-repo"
+        }
+    }
+}
+
+dependencies {
+    // Oracle JDBC for Java 8
+    implementation 'com.oracle.weblogic:ojdbc8:18.3.0.0.0'
+    implementation 'com.oracle.weblogic:xmlparserv2_sans_jaxp_services:12.1.3-0-0'
+    // Oracle XML Database
+    implementation 'com.oracle.weblogic:oracle.xdb_12.1.0:12.1.3-0-0'
+    // Oracle Multimedia Database
+    implementation 'oracle.ord.im:ordhttp:12.2.0.1.0'
+    implementation 'oracle.ord.im:ordim:12.2.0.1.0'
+    implementation 'oracle.sqlj:runtime12:18.3.0.0.0'
+    // Oracle SDO Locator Objects
+    implementation 'oracle.sdo.locator:sdoapi:12.2.0.1.0'
+    implementation 'oracle.sdo.locator:sdogr:12.2.0.1.0'
+    implementation 'oracle.sdo.locator:sdonm:12.2.0.1.0'
+    implementation 'oracle.sdo.locator:sdotopo:12.2.0.1.0'
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.13'
+    //cassandra
+    implementation 'com.datastax.oss:java-driver-core:4.13.0'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    // implementation 'com.datastax.oss:java-driver-core:4.9.0' //verze se spravnym tinkerpop - pouzit jen pokud nebude fungovat
+    // implementation 'ch.qos.logback:logback-classic:1.2.7'
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use jcenter for resolving dependencies
+    jcenter()
+    // Maven repository for the Database Systems courses
+    maven { url "https://rychly-edu.gitlab.io/dbs/mvn-repo" }
+
+    mavenCentral()
+}
+
+test {
+    useJUnit()
+    maxHeapSize = '1G'
+}
